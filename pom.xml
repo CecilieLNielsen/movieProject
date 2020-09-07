@@ -134,7 +134,7 @@
                 <version>2.2</version>
                 <configuration>          
                     <server>TomcatServer</server>
-                    <url>${remote.server}</url>
+                    <url>https://www.bycecilie.dk/manager/text</url>
                     <username>${remote.user}</username>
                     <password>${remote.password}</password>
                     <update>true</update>    
