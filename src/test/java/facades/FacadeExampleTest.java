@@ -1,12 +1,14 @@
 package facades;
 
+import DTO.MovieDTO;
 import utils.EMF_Creator;
-import entities.RenameMe;
+import entities.Movie;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +18,21 @@ import org.junit.jupiter.api.Test;
 public class FacadeExampleTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static MovieFacade facade;
 
     public FacadeExampleTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
-       emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = FacadeExample.getFacadeExample(emf);
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
+        facade = MovieFacade.getFacadeExample(emf);
+
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM Movie m").executeUpdate();
+        em.createNativeQuery("ALTER TABLE `MOVIE` AUTO_INCREMENT = 1").executeUpdate(); // Resetter auto increment tilbage til 1
+        em.getTransaction().commit();
     }
 
     @AfterAll
@@ -39,10 +47,11 @@ public class FacadeExampleTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
-
+            String[] actors = {"Holger Hansen", "Yin Yung", "George Lodway"};
+            em.persist(new Movie(2017, "Buda's quest for greatness", actors));
+            em.persist(new Movie(2018, "Buda's crawl", actors));
+            em.persist(new Movie(2019, "Buda's revenge", actors));
+            em.persist(new Movie(2019, "Buda's last day", actors));
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -51,13 +60,61 @@ public class FacadeExampleTest {
 
     @AfterEach
     public void tearDown() {
-//        Remove any data after each test was run
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM Movie m").executeUpdate();
+        em.createNativeQuery("ALTER TABLE `MOVIE` AUTO_INCREMENT = 1").executeUpdate(); // Resetter auto increment tilbage til 1
+        em.getTransaction().commit();
     }
 
-    // TODO: Delete or change this method 
     @Test
-    public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
+    public void getMovieById() {
+        // Arrange
+        long id = 1;
+        // Act
+        MovieDTO result = facade.getMovieById(id);
+        // Assert
+        assertNotNull(result);
     }
 
+    @Test
+    public void getAllMovies() {
+        // Arrange
+
+        // Act
+        List<MovieDTO> result = facade.getAllMovies();
+        // Assert
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    public void getMoviesByYear() {
+        // Arrange
+        int year = 2019;
+        // Act
+        List<MovieDTO> result = facade.getMoviesByYear(year);
+        // Assert
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void createMovie() {
+        // Arrange
+        String[] actors = {"Holger Hansen", "Yin Yung", "George Lodway"};
+        MovieDTO movieDTO = new MovieDTO(2020, "Buda's relief", actors);
+        // Act
+        MovieDTO result = facade.createMovie(movieDTO);
+        // Assert
+        assertEquals((long) 5, (long) result.getId());
+    }
+
+    @Test
+    public void deleteMovieById() {
+        // Arrange
+        long id = 2;
+        // Act
+        facade.deleteMovieById(id);
+        // Assert
+        assertTrue(true);
+    }
 }
