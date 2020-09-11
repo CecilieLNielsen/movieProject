@@ -140,7 +140,7 @@ public class MovieResourceTest {
     }
     
      
-    @Test //MANGLER
+    /*@Test //MANGLER
     public void testGetTitleNotFound() throws Exception { 
         given()
         .contentType("application/json")
@@ -149,7 +149,7 @@ public class MovieResourceTest {
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("title", equalTo("Koalaen"));   
     }
-    
+    */
    
     @Test
     public void testGetMovieById() throws Exception {
