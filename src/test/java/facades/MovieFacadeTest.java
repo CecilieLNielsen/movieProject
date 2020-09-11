@@ -15,12 +15,12 @@ import org.junit.jupiter.api.Test;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class FacadeExampleTest {
+public class MovieFacadeTest {
 
     private static EntityManagerFactory emf;
     private static MovieFacade facade;
 
-    public FacadeExampleTest() {
+    public MovieFacadeTest() {
     }
 
     @BeforeAll
@@ -68,7 +68,7 @@ public class FacadeExampleTest {
     }
 
     @Test
-    public void getMovieById() {
+    public void testGetMovieById() {
         // Arrange
         long id = 1;
         // Act
@@ -78,7 +78,7 @@ public class FacadeExampleTest {
     }
 
     @Test
-    public void getAllMovies() {
+    public void testGetAllMovies() {
         // Arrange
 
         // Act
@@ -88,7 +88,7 @@ public class FacadeExampleTest {
     }
 
     @Test
-    public void getMoviesByYear() {
+    public void testGetMoviesByYear() {
         // Arrange
         int year = 2019;
         // Act
@@ -98,7 +98,7 @@ public class FacadeExampleTest {
     }
 
     @Test
-    public void createMovie() {
+    public void testCreateMovie() {
         // Arrange
         String[] actors = {"Holger Hansen", "Yin Yung", "George Lodway"};
         MovieDTO movieDTO = new MovieDTO(2020, "Buda's relief", actors);
@@ -109,7 +109,7 @@ public class FacadeExampleTest {
     }
 
     @Test
-    public void deleteMovieById() {
+    public void testDeleteMovieById() {
         // Arrange
         long id = 2;
         // Act

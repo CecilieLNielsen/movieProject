@@ -20,17 +20,18 @@ public class Main {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
 
-        em.getTransaction().begin();
-        //int year = 2020;
-        //String title = "KOALAEN!";
-        //String[] actors =  {"Jamen Brown", "Robert Hardley", "Bobo the Dodo"};
-        //Movie movie = new Movie(year, title, actors);
-        em.getTransaction().commit();
-        
-        System.out.println(MovieFacade.getFacadeExample(emf).getMovieById(1));
-        
+        try {
+            em.getTransaction().begin();
+            String[] actors = {"Holger Hansen", "Yin Yung", "George Lodway"};
+            em.persist(new Movie(2017, "Buda's quest for greatness", actors));
+            em.persist(new Movie(2018, "Buda's crawl", actors));
+            em.persist(new Movie(2019, "Buda's revenge", actors));
+            em.persist(new Movie(2019, "Buda's last day", actors));
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
 
-        em.close();
         emf.close();
     }
 }

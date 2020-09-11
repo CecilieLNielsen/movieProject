@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -40,11 +41,33 @@ public class MovieFacade {
         return emf.createEntityManager();
     }
 
-    public MovieDTO getMovieById(long id) {
+    public MovieDTO getMovieById(long id) throws NoResultException {
         EntityManager em = getEntityManager();
         try {
             TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.id = :id", Movie.class).setParameter("id", id);
             return new MovieDTO(query.getSingleResult());
+        } catch (NoResultException e) {
+            throw new NoResultException(e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+    public MovieDTO getMovieByTitle(String title) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class).setParameter("title", title);
+            return new MovieDTO(query.getSingleResult());
+        } finally {
+            em.close();
+        }
+    }
+
+    public long getCountOfMovies() {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(m) FROM Movie m", Long.class);
+            return query.getSingleResult();
         } finally {
             em.close();
         }
